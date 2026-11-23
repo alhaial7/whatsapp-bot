@@ -25,17 +25,18 @@ def webhook():
 
     if request.method == "POST":
         data = request.get_json()
-        print(data)
+        print(data, flush=True)
         try:
             entry = data["entry"][0]["changes"][0]["value"]
             if "messages" in entry:
                 msg = entry["messages"][0]
                 from_number = msg["from"]
                 text = msg["text"]["body"]
-                print(f"Received: {text} from {from_number}")
+                print(f"Received: {text} from {from_number}", flush=True)
+                print(f"Using PHONE_ID: {PHONE_NUMBER_ID} Token exists: {bool(ACCESS_TOKEN)}", flush=True)
                 send_message(from_number, f"هلا! وصلتني رسالتك: {text}")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error: {e}", flush=True)
         return "OK", 200
 
 def send_message(to, text):
@@ -51,7 +52,7 @@ def send_message(to, text):
         "text": {"body": text}
     }
     r = requests.post(url, headers=headers, json=payload)
-    print(f"Send status: {r.status_code} - {r.text}")
+    print(f"Send status: {r.status_code} - {r.text}", flush=True)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
